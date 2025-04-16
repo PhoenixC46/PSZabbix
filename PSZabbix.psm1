@@ -2,24 +2,15 @@
 $latestSession = $null
 
 
-
-################################################################################
-## INTERNAL HELPERS
-################################################################################
-
-function New-JsonrpcRequest($method, $params, $auth = $null)
+function New-JsonrpcRequest($method, $params)
 {
     if ($params.output -eq $null -and $method -like "*.get")
-    {
-        $params["output"] = "extend"
-    }
-
+    {$params["output"] = "extend"}
     return ConvertTo-Json @{
         jsonrpc = "2.0"
 	    method = $method
 	    params = $params
 	    id = 1
-	    auth = $auth
     } -Depth 20
 }
 

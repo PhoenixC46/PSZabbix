@@ -1,37 +1,10 @@
-# What is PSZabbix
-
-A powershell module for automating Zabbix administration.
+# What is PSZabbix7
+A powershell module for automating Zabbix administration, modified for Zabbix 7.2+
+Branched from https://github.com/marcanpilami
 
 # Goals
-
-This module aims at making it easy to automate the creation of standard 
-objects inside Zabbix. That way, Zabbix can be included inside fully 
-automated workflows like server provisioning. It may for example be used 
-inside a script task of SCVMM to reference a new VM inside Zabbix after 
-creation, or to add a newly created user (by your preferred provisioning 
-tool) to a set of user groups.
-
-The objects which can be managed are only the basic objects: hosts, host 
-groups, users, user groups, templates and a few others. The module does not
-expose the full Zabbix API. We actually expect administrators to use the
-Zabbix UI to do complex operations like adding monitored items to hosts or
-templates (moreover, these operations being rare, there is little value in
-automating them). 
-
-This module is tested on Zabbix 2.4 and later, 3.2 and later. It should 
-also work and other versions but without any guarantee.
-
-# Installation
-
-The module is published on the PowerShell gallery, so download and installation is simply (powershell 5+):
-
-```
-PS> Install-Module PSZabbix -scope CurrentUser
-```
-
-If using an older version of PowerShell, you must download the release from the releases page, unzip it 
-and put the PSZabbix folder inside MyDocuments/WindowsPowerShell/Modules or any other folder in the module 
-search path.
+This module aims at making it easy to automate the creation of standard objects inside Zabbix. That way, Zabbix can be included inside fully automated workflows like server provisioning. It may for example be used inside a script task of SCVMM to reference a new VM inside Zabbix after creation, or to add a newly created user (by your preferred provisioning tool) to a set of user groups.
+The objects which can be managed are only the basic objects: hosts, host groups, users, user groups, templates and a few others. The module does not expose the full Zabbix API. We actually expect administrators to use the Zabbix UI to do complex operations like adding monitored items to hosts or templates (moreover, these operations being rare, there is little value in automating them). 
 
 # Usage
 
