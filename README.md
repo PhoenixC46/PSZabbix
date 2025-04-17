@@ -1,21 +1,10 @@
 # What is PSZabbix7
 A powershell module for automating Zabbix administration, modified for Zabbix 7.2+
-Branched from https://github.com/marcanpilami
 
-# Goals
-This module aims at making it easy to automate the creation of standard objects inside Zabbix. That way, Zabbix can be included inside fully automated workflows like server provisioning. It may for example be used inside a script task of SCVMM to reference a new VM inside Zabbix after creation, or to add a newly created user (by your preferred provisioning tool) to a set of user groups.
-The objects which can be managed are only the basic objects: hosts, host groups, users, user groups, templates and a few others. The module does not expose the full Zabbix API. We actually expect administrators to use the Zabbix UI to do complex operations like adding monitored items to hosts or templates (moreover, these operations being rare, there is little value in automating them). 
+The objects which can be managed are only the basic objects: hosts, host groups, users, user groups, templates and a few others. The module does not expose the full Zabbix API. Administrators are expected to use the Zabbix UI to do complex operations like adding monitored items to hosts or templates.
 
 # Usage
-
-All cmdlets have a "get-help" documentation. Here are the basics:
-
-```
-# Import the module (if old powershell version)
-PS> Import-Module PSZabbix
-
-# You must first create a session against a Zabbix server - only needed once per work session.
-PS> $s = New-ZbxApiSession "http://myserver/zabbix/api_jsonrpc.php" (Get-Credential MyAdminLogin)
+$ConnectZbx = New-ZbxApiSession "http://myserver/zabbix/api_jsonrpc.php" (Get-Credential MyAdminLogin)
 
 # Then call any cmdlet
 PS> Get-ZbxHost
