@@ -40,14 +40,16 @@ function Get-ZbxData {
     param ( 
         [parameter(Mandatory = $true)][string]$dataName,
         [parameter(Mandatory = $false)][string]$Ack = "extend",
+        [parameter(Mandatory = $false)][string]$NewTrig = "extend",
         [parameter(Mandatory = $false)][string]$hostids,
         [parameter(Mandatory = $false)][string]$TimeFrom = (((Get-Date).AddDays(-1)).ToUniversalTime()).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
         [parameter(Mandatory = $false)][string]$TimeTill = (((Get-Date).AddSeconds(-1)).ToUniversalTime()).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
     )
     Write-Host "Is Type:"$dataName
     If($dataName -eq "graph.get" -or $dataName -eq "history.get" -or $dataName -eq "hostinterface.get"){
-        If($null -ne $hostids) {$hostids -eq $hostids} Else {$hostids = $null}
-        (Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"hostids"="$hostids"})).result
+        If($null -ne $hostids) {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"hostids"="$hostids"})).result} 
+        Else {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend"})).result}
+        
     }
     ElseIf($dataName -eq "auditlog.get"){
         $TimeFrom = [Math]::Floor((New-TimeSpan -Start $OriginTime -End $TimeFrom).TotalSeconds)
@@ -58,11 +60,12 @@ function Get-ZbxData {
         (Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"actionids"="3"})).result
     }
     ElseIf($dataName -eq "trigger.get"){
-        (Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"only_true"="extend"})).result
+        If($NewTrig -eq 'N') {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend"})).result}
+        Else {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"only_true"="extend"})).result}
     }
     ElseIf($dataName -eq "problem.get"){
-        If($Ack -eq "Y") {$PrbAck = "extend"} Else {$PrbAck = ""}
-        (Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"selectAcknowledges"="$PrbAck"})).result
+        If($Ack -eq "Y") {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"selectAcknowledges"="$PrbAck"})).result} 
+        Else {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend"})).result}
     }
     Else{
         (Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{})).result

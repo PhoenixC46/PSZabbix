@@ -117,10 +117,10 @@ $ZbxProxies = Get-ZbxData -dataName "proxy.get"
 $ZbxServices = Get-ZbxData -dataName "service.get"
 $ZbxUsers = Get-ZbxData -dataName "user.get"
 $ZbxAuditLog = Get-ZbxData -dataName "auditlog.get" -TimeFrom $TimeFrom -TimeTill $TimeTill
-$ZbxProblems = Get-ZbxData -dataName "problem.get" -Ack $Acknowledged
+$ZbxProblems = Get-ZbxData -dataName "problem.get" -Ack $Acknowledged   # Requires a Y or N response. Default = N
 $ZbxAlerts = Get-ZbxData -dataName "alert.get"
 $ZbxActions = Get-ZbxData -dataName "action.get"
-$ZbxTriggers = Get-ZbxData -dataName "trigger.get"
+$ZbxTriggers = Get-ZbxData -dataName "trigger.get" -NewTrig $RecentTriggers    # Requires a Y or N response. Default = Y. Using N will result in all triggers being retrieved.
 $ZbxTrends = Get-ZbxData -dataName "trend.get"
 $ZbxGraphs = Get-ZbxData -dataName "graph.get" -hostids $HostId
 $ZbxDiscHost = Get-ZbxData -dataName "dhost.get"
