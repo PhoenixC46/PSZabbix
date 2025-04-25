@@ -1,0 +1,2 @@
+Hostname=zabbix.mydomain.com
+AuthKey=InsertYourAuthorisationKeyFromZabbixHere
