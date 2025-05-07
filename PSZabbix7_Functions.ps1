@@ -41,7 +41,8 @@ function Get-ZbxData {
         [parameter(Mandatory = $true)][string]$dataName,
         [parameter(Mandatory = $false)][string]$Ack = "extend",
         [parameter(Mandatory = $false)][string]$NewTrig = "extend",
-        [parameter(Mandatory = $false)][string]$hostids,
+        [parameter(Mandatory = $false)][string]$hostids = "",
+        [parameter(Mandatory = $false)][string]$GroupMem = "extend",
         [parameter(Mandatory = $false)][string]$TimeFrom = (((Get-Date).AddDays(-1)).ToUniversalTime()).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
         [parameter(Mandatory = $false)][string]$TimeTill = (((Get-Date).AddSeconds(-1)).ToUniversalTime()).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
     )
@@ -49,7 +50,14 @@ function Get-ZbxData {
     If($dataName -eq "graph.get" -or $dataName -eq "history.get" -or $dataName -eq "hostinterface.get"){
         If($null -ne $hostids) {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"hostids"="$hostids"})).result} 
         Else {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend"})).result}
-        
+    }
+    ElseIf($dataName -eq "hostgroup.get"){
+        If($GroupMem -eq 'N') {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend"})).result}
+        Else {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"selectHosts"="extend"})).result}
+    }
+    ElseIf($dataName -eq "item.get"){
+        If($hostids -ge 10000) {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"hostids"="$hostids";"with_triggers"="true"})).result} 
+        Else {Write-Host "No HostId Provided" -ForegroundColor Yellow}
     }
     ElseIf($dataName -eq "auditlog.get"){
         $TimeFrom = [Math]::Floor((New-TimeSpan -Start $OriginTime -End $TimeFrom).TotalSeconds)
@@ -58,6 +66,9 @@ function Get-ZbxData {
     }
     ElseIf($dataName -eq "alert.get"){
         (Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend";"actionids"="3"})).result
+    }
+    ElseIf($dataName -eq "trend.get"){
+        (Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"='["itemid","clock","num","value_min","value_avg","value_max"]'})).result
     }
     ElseIf($dataName -eq "trigger.get"){
         If($NewTrig -eq 'N') {(Invoke-RestMethod -Uri $ZbxURI -Method $ZbxMethod -Headers $ZbxHeader -Body (Get-ZbxGetData $dataName @{"output"="extend"})).result}
@@ -79,12 +90,13 @@ function Get-ZbxData {
 #$Acknowledged = "Y"
 
 #$ZbxTest = Test-ZbxAPI
-#$ZbxHostGroups = Get-ZbxData -dataName "hostgroup.get"
+#$ZbxHostGroups = Get-ZbxData -dataName "hostgroup.get" -GroupMem N
 #$ZbxHosts = Get-ZbxData -dataName "host.get"
 #$ZbxHostInterfaces = Get-ZbxData -dataName "hostinterface.get" -hostids $HostId
 #$ZbxProxyGroups = Get-ZbxData -dataName "proxygroup.get"
 #$ZbxProxies = Get-ZbxData -dataName "proxy.get"
 #$ZbxServices = Get-ZbxData -dataName "service.get"
+#ZbxItem = Get-ZbxData -dataName "item.get"
 #$ZbxUsers = Get-ZbxData -dataName "user.get"
 #$ZbxAuditLog = Get-ZbxData -dataName "auditlog.get" -TimeFrom $TimeFrom -TimeTill $TimeTill
 #$ZbxProblems = Get-ZbxData -dataName "problem.get" -Ack $Acknowledged

@@ -108,16 +108,24 @@ If you do not specify a range where one is required, the default range of 1 day 
 
 # Commands Tested and working:
 ```
+# Variables:
+$TimeFrom = (Get-Date).AddDays(-2)
+$TimeTill = (Get-Date)
+$HostId = 10692
+$Acknowledged = "Y"
+$RecentTriggers = "Y"
+
 $ZbxTest = Test-ZbxAPI
-$ZbxHostGroups = Get-ZbxData -dataName "hostgroup.get"
+$ZbxHostGroups = Get-ZbxData -dataName "hostgroup.get" -GroupMem N    # Requires a Y or N response. Default = N. Using Y will include the member Hosts.
 $ZbxHosts = Get-ZbxData -dataName "host.get"
 $ZbxHostInterfaces = Get-ZbxData -dataName "hostinterface.get" -hostids $HostId
 $ZbxProxyGroups = Get-ZbxData -dataName "proxygroup.get"
 $ZbxProxies = Get-ZbxData -dataName "proxy.get"
 $ZbxServices = Get-ZbxData -dataName "service.get"
+#ZbxItem = Get-ZbxData -dataName "item.get" -hostids $HostId
 $ZbxUsers = Get-ZbxData -dataName "user.get"
 $ZbxAuditLog = Get-ZbxData -dataName "auditlog.get" -TimeFrom $TimeFrom -TimeTill $TimeTill
-$ZbxProblems = Get-ZbxData -dataName "problem.get" -Ack $Acknowledged   # Requires a Y or N response. Default = N
+$ZbxProblems = Get-ZbxData -dataName "problem.get" -Ack $Acknowledged    # Requires a Y or N response. Default = N
 $ZbxAlerts = Get-ZbxData -dataName "alert.get"
 $ZbxActions = Get-ZbxData -dataName "action.get"
 $ZbxTriggers = Get-ZbxData -dataName "trigger.get" -NewTrig $RecentTriggers    # Requires a Y or N response. Default = Y. Using N will result in all triggers being retrieved.
@@ -125,6 +133,7 @@ $ZbxTrends = Get-ZbxData -dataName "trend.get"
 $ZbxGraphs = Get-ZbxData -dataName "graph.get" -hostids $HostId
 $ZbxDiscHost = Get-ZbxData -dataName "dhost.get"
 $ZbxDiscService = Get-ZbxData -dataName "dservice.get"
+$ZbxDiscRule = Get-ZbxData -dataName "drule.get"
 $ZbxTemplates = Get-ZbxData -dataName "template.get"
 $ZbxHistory = Get-ZbxData -dataName "history.get" -hostids $HostId
 $ZbxValueMap = Get-ZbxData -dataName "valuemap.get"
